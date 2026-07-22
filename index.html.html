@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="white">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q-SYS-WEB-Certification — Abdallah Morshed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#2fb8c6;
+  --teal-glow:rgba(47,184,198,.35);
+  --cat-intro:#e6007e;
+  --cat-platform:#0072ce;
+  --cat-vision:#39b54a;
+  --cat-control:#9aa0a3;
+  --cat-cinema:#d4145a;
+  --ok:#39b54a;
+  --mid:#e0a92a;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-ar:'IBM Plex Sans Arabic',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+
+/* ---------- THEMES ---------- */
+:root[data-theme="blue"]{
+  --bg-0:#060b14; --bg-1:#0d1626; --bg-2:#132038;
+  --line:#1e2c42; --text-hi:#eef3f8; --text-mid:#93a6ba;
+  --text-lo:#546a7f; --glow1:rgba(47,184,198,.10); --glow2:rgba(47,184,198,.06);
+  --shadow:0 20px 60px rgba(0,0,0,.5);
+}
+:root[data-theme="black"]{
+  --bg-0:#000000; --bg-1:#0c0c0c; --bg-2:#151515;
+  --line:#262626; --text-hi:#f2f2f2; --text-mid:#a3a3a3; --text-lo:#5c5c5c;
+  --glow1:rgba(47,184,198,.06); --glow2:rgba(47,184,198,.03);
+  --shadow:0 20px 60px rgba(0,0,0,.6);
+}
+:root[data-theme="gray"]{
+  --bg-0:#1b1e21; --bg-1:#25292d; --bg-2:#2e3338;
+  --line:#3c4248; --text-hi:#f1f3f4; --text-mid:#adb4ba; --text-lo:#767d84;
+  --glow1:rgba(47,184,198,.08); --glow2:rgba(47,184,198,.05);
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+}
+:root[data-theme="white"]{
+  --bg-0:#f4f6f7; --bg-1:#ffffff; --bg-2:#eef1f3;
+  --line:#dde3e7; --text-hi:#10161c; --text-mid:#4c5862; --text-lo:#88929a;
+  --glow1:rgba(47,184,198,.10); --glow2:rgba(47,184,198,.06);
+  --shadow:0 12px 34px rgba(20,30,40,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(circle at 15% 0%, var(--glow1), transparent 45%),
+    radial-gradient(circle at 85% 100%, var(--glow2), transparent 40%),
+    var(--bg-0);
+  color:var(--text-hi);
+  font-family:var(--font-ar);
+  min-height:100vh;
+  padding:44px 28px 100px;
+  transition:background .3s ease, color .3s ease;
+}
+.wrap{max-width:1240px;margin:0 auto;}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:44px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand svg{width:38px;height:38px;flex-shrink:0;}
+.brand-text .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;}
+.brand-text h1{font-family:var(--font-display);font-size:25px;font-weight:600;color:var(--text-hi);margin-top:2px;}
+.owner{font-family:var(--font-mono);font-size:12px;color:var(--text-lo);letter-spacing:.05em;}
+
+.top-right{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+.stats{display:flex;gap:12px;}
+.stat{background:var(--bg-1);border:1px solid var(--line);border-radius:10px;padding:9px 16px;text-align:center;min-width:68px;}
+.stat b{display:block;font-family:var(--font-display);font-size:19px;color:var(--teal);}
+.stat span{font-size:10.5px;color:var(--text-lo);}
+
+.theme-picker{display:flex;align-items:center;gap:8px;background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:6px;}
+.theme-swatch{width:26px;height:26px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:transform .15s ease, border-color .15s ease;}
+.theme-swatch:hover{transform:translateY(-2px);}
+.theme-swatch.active{border-color:var(--teal);}
+.theme-swatch[data-t="blue"]{background:linear-gradient(135deg,#0d1626,#132038);}
+.theme-swatch[data-t="black"]{background:#0c0c0c;}
+.theme-swatch[data-t="gray"]{background:#2e3338;}
+.theme-swatch[data-t="white"]{background:#ffffff;box-shadow:inset 0 0 0 1px #d9dee2;}
+
+/* ---------- PLAN TABLE ---------- */
+.plan{border-top:1px solid var(--line);}
+.level-row{
+  display:grid;
+  grid-template-columns:150px repeat(5,1fr);
+  gap:16px;
+  align-items:stretch;
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+.level-label{
+  display:flex;align-items:center;
+  font-family:var(--font-display);font-weight:700;font-size:19px;
+  border-right:1px solid var(--line);
+  padding-right:16px;
+}
+.cat-cell{display:flex;flex-direction:column;gap:10px;justify-content:flex-start;align-items:stretch;min-height:56px;}
+
+/* course card */
+.card{
+  background:var(--bg-1);border:1px solid var(--line);border-radius:11px;
+  padding:12px 13px 11px;position:relative;overflow:hidden;
+  transition:opacity .35s ease, transform .35s ease, border-color .2s ease;
+}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--cat-color);}
+.card:hover{border-color:var(--cat-color);}
+.card .code{font-family:var(--font-mono);font-size:9.5px;color:var(--text-lo);letter-spacing:.05em;margin-bottom:4px;}
+.card h3{font-family:var(--font-display);font-size:13.5px;font-weight:600;color:var(--text-hi);line-height:1.3;}
+.card .sub{font-size:10px;color:var(--text-mid);margin-top:2px;margin-bottom:6px;}
+.card h3 + .actions-row{margin-top:8px;}
+
+.status-dot-row{display:flex;align-items:center;gap:6px;margin:7px 0 8px;font-family:var(--font-mono);font-size:9px;color:var(--text-mid);letter-spacing:.04em;cursor:pointer;user-select:none;}
+.status-dot-row .dot{width:6px;height:6px;border-radius:50%;background:var(--text-lo);}
+.status-dot-row[data-status="completed"]{color:var(--ok);}
+.status-dot-row[data-status="completed"] .dot{background:var(--ok);}
+.status-dot-row[data-status="in-progress"]{color:var(--mid);}
+.status-dot-row[data-status="in-progress"] .dot{background:var(--mid);}
+
+.actions-row{display:flex;gap:5px;}
+.icon-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:7px;
+  padding:6px 0;color:var(--text-mid);cursor:pointer;transition:all .18s ease;
+}
+.icon-btn svg{width:13px;height:13px;}
+.icon-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(47,184,198,.1);}
+.card:not([data-completed="true"]) .icon-btn{opacity:.3;pointer-events:none;}
+
+/* dimming via legend filter */
+.plan.filtering .card{opacity:.18;transform:scale(.97);}
+.plan.filtering .card.match{opacity:1;transform:scale(1);}
+
+/* wide span card */
+.card.wide h3{font-size:16px;}
+
+/* legend */
+.legend-wrap{margin-top:56px;border-top:1px solid var(--line);padding-top:24px;}
+.legend-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--text-lo);text-transform:uppercase;margin-bottom:14px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px;}
+.legend-btn{
+  position:relative;background:var(--bg-1);border:1px solid var(--line);border-radius:10px;
+  padding:10px 22px 10px 18px;font-family:var(--font-ar);font-weight:600;font-size:13px;color:var(--text-hi);
+  cursor:pointer;overflow:hidden;transition:opacity .3s ease, border-color .2s ease;
+}
+.legend-btn::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--lcolor);}
+.legend-btn.dim{opacity:.28;}
+.legend-btn.active{border-color:var(--lcolor);box-shadow:0 0 0 1px var(--lcolor), 0 0 16px -4px var(--lcolor);}
+
+/* lightbox */
+.lightbox{
+  position:fixed;inset:0;background:rgba(6,8,9,.86);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:50;padding:30px;
+}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:min(90vw,640px);max-height:80vh;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow);}
+.lightbox .close{position:absolute;top:24px;right:24px;color:var(--text-hi);font-family:var(--font-mono);font-size:13px;cursor:pointer;border:1px solid var(--line);padding:8px 14px;border-radius:8px;background:var(--bg-1);}
+.lightbox .missing{font-family:var(--font-mono);color:var(--text-lo);font-size:12px;text-align:center;line-height:1.6;word-break:break-all;}
+
+footer{margin-top:56px;text-align:center;font-family:var(--font-mono);font-size:10.5px;color:var(--text-lo);}
+
+@media (max-width:860px){
+  .level-row{grid-template-columns:100px repeat(5,minmax(120px,1fr));overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 100 100"><polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="none" stroke="#2fb8c6" stroke-width="7"/><circle cx="50" cy="50" r="16" fill="#0e7a8c"/></svg>
+      <div class="brand-text">
+        <div class="eyebrow">Certification Path</div>
+        <h1>Q-SYS Training Plan</h1>
+        <div class="owner">abdallah_morshed</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="stats">
+        <div class="stat"><b id="statDone">0</b><span>Done</span></div>
+        <div class="stat"><b id="statTotal">0</b><span>Total</span></div>
+      </div>
+      <div class="theme-picker" id="themePicker">
+        <div class="theme-swatch" data-t="blue" title="Dark Blue"></div>
+        <div class="theme-swatch" data-t="black" title="Black"></div>
+        <div class="theme-swatch" data-t="gray" title="Gray"></div>
+        <div class="theme-swatch" data-t="white" title="White"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="plan" id="plan"></div>
+
+  <div class="legend-wrap">
+    <div class="legend-title">Legend — Course Category</div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <footer>Local file path — abdallah_morshed / [LEVEL_FOLDER] / [COURSE_FOLDER] / [FILE_NAME]</footer>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="close" id="closeLightbox">Close ✕</div>
+  <div id="lightboxContent"></div>
+</div>
+
+<script>
+const CAT_ORDER = ["intro","platform","vision","control","cinema"];
+const CATS = {
+  intro:   {label:"Introductory", color:"var(--cat-intro)"},
+  platform:{label:"Platform",     color:"var(--cat-platform)"},
+  vision:  {label:"VisionSuite",  color:"var(--cat-vision)"},
+  control: {label:"Control",      color:"var(--cat-control)"},
+  cinema:  {label:"Cinema",       color:"var(--cat-cinema)"},
+};
+
+const LEVELS = [
+  {
+    id:"LVL0", folder:"00_NOVICE_LVL_Zero", title:"Level 0",
+    columns:{
+      intro:    [{code:"01_Q-SYS-Architect", name:"Q-SYS Architect", status:"completed"}],
+      platform: [{code:"02_Q-SYS-Level-Zero", name:"Q-SYS Level Zero", status:"completed", span:3, wide:true}],
+      vision:   [],
+      control:  [],
+      cinema:   [{code:"03_Q-SYS-Cinema-101", name:"Q-SYS Cinema 101", status:"completed"}],
+    }
+  },
+  {
+    id:"LVL1", folder:"01_BEGINNER_LVL_One", title:"Level 1",
+    columns:{
+      intro:    [{code:"11_Q-SYS-Sales-Professional", name:"Q-SYS Sales Professional", status:"completed"}],
+      platform: [
+        {code:"12_Q-SYS-Level-1", name:"Q-SYS Level 1", status:"completed"},
+        {code:"13_Q-SYS-Reflect-Technician-Training", name:"Q-SYS Reflect", sub:"Technician Training", status:"completed"},
+        {code:"14_Q-SYS-Video-101", name:"Q-SYS Video 101", status:"completed"},
+      ],
+      vision:   [
+        {code:"15_Q-SYS-VisionSuite-ACPR-Level-1", name:"Q-SYS VisionSuite", sub:"ACPR Level 1", status:"completed"},
+        {code:"16_Q-SYS-VisionSuite-Seervision-Level-1", name:"Q-SYS VisionSuite", sub:"Seervision Level 1", status:"completed"},
+      ],
+      control:  [
+        {code:"17_Q-SYS-Control-101", name:"Q-SYS Control 101", status:"completed"},
+        {code:"18_Q-SYS-Control-&-UCI-Fundamentals-Control-Logic", name:"Q-SYS Control & UCI", sub:"Fundamentals — Control Logic", status:"completed"},
+      ],
+      cinema:   [{code:"19_Q-SYS-Level-1-for-Cinema", name:"Q-SYS Level 1 for Cinema", status:"completed"}],
+    }
+  },
+  {
+    id:"LVL2", folder:"02_INTERMEDIATE_LVL_Two", title:"Level 2",
+    columns:{
+      intro:    [],
+      platform: [{code:"21_Q-SYS-Level-2", name:"Q-SYS Level 2", status:"completed"}],
+      vision:   [
+        {code:"22_Q-SYS-VisionSuite-ACPR-Level-2", name:"Q-SYS VisionSuite", sub:"ACPR Level 2", status:"completed"},
+        {code:"23_Q-SYS-VisionSuite-Seervision-Level-2", name:"Q-SYS VisionSuite", sub:"Seervision Level 2", status:"completed"},
+      ],
+      control:  [{code:"24_Q-SYS-Control-&-UCI-Intermediate-Block-Controller", name:"Q-SYS Control & UCI", sub:"Intermediate — Block Controller", status:"completed"}],
+      cinema:   [{code:"25_Q-SYS-Level-2-for-Cinema", name:"Q-SYS Level 2 for Cinema", status:"completed"}],
+    }
+  },
+  {
+    id:"LVL3", folder:"03_ADVANCE_LVL_Three", title:"Level 3",
+    columns:{
+      intro:    [],
+      platform: [{code:"21_Q-SYS-Quantum-Level-1", name:"Q-SYS Quantum Level 1", status:"completed"}],
+      vision:   [],
+      control:  [
+        {code:"22_Q-SYS-Control-&-UCI-Advanced-Lua-Scripting", name:"Q-SYS Control & UCI", sub:"Advanced — Lua Scripting", status:"completed"},
+        {code:"23_Q-SYS-Control-Quickstarts", name:"Q-SYS Control Quickstarts", status:"completed"},
+      ],
+      cinema:   [],
+    }
+  },
+];
+
+const iconEye = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const iconBadge = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 6 22l6-3 6 3-2.5-8.5"/></svg>`;
+const iconDownload = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>`;
+
+const planEl = document.getElementById('plan');
+const legendEl = document.getElementById('legend');
+
+function filePaths(level, code){
+  const cleanName = code.replace(/^[0-9]+_/, '');
+  const encFolder = encodeURIComponent(level.folder);
+  const encCode = encodeURIComponent(code);
+  const encClean = encodeURIComponent(cleanName);
+  
+  const base = `abdallah_morshed/${encFolder}/${encCode}/`;
+  
+  return { 
+    certImg: base + encClean + "_Certification.png", 
+    certPdf: base + encClean + "_Certification.pdf", 
+    badgeImg: base + encClean + "_Badge.png" 
+  };
+}
+
+function buildCard(level, catKey, course){
+  const cat = CATS[catKey];
+  const p = filePaths(level, course.code);
+  const card = document.createElement('div');
+  card.className = 'card' + (course.wide ? ' wide' : '');
+  card.dataset.cat = catKey;
+  card.dataset.completed = course.status === 'completed';
+  card.style.setProperty('--cat-color', cat.color);
+
+  card.innerHTML = `
+    <div class="code">${course.code}</div>
+    <h3>${course.name}</h3>
+    ${course.sub ? `<div class="sub">${course.sub}</div>` : ''}
+    <div class="status-dot-row" data-status="${course.status}"><span class="dot"></span>${course.status}</div>
+    <div class="actions-row">
+      <button class="icon-btn" data-action="cert" title="View Certificate">${iconEye}</button>
+      <button class="icon-btn" data-action="badge" title="View Badge">${iconBadge}</button>
+      <button class="icon-btn" data-action="download" title="Download PDF">${iconDownload}</button>
+    </div>`;
+
+  card.querySelector('.status-dot-row').addEventListener('click', ()=>{
+    const cycle = {"not-started":"in-progress","in-progress":"completed","completed":"not-started"};
+    course.status = cycle[course.status];
+    render();
+  });
+  card.querySelector('[data-action="cert"]').addEventListener('click', ()=> openLightbox(p.certImg, course.name + ' — Certificate'));
+  card.querySelector('[data-action="badge"]').addEventListener('click', ()=> openLightbox(p.badgeImg, course.name + ' — Badge'));
+  card.querySelector('[data-action="download"]').addEventListener('click', ()=> {
+    const a = document.createElement('a'); a.href = p.certPdf; a.download = ''; a.click();
+  });
+  return card;
+}
+
+function render(){
+  planEl.innerHTML = '';
+  let done = 0, total = 0;
+
+  LEVELS.forEach(level=>{
+    const row = document.createElement('div');
+    row.className = 'level-row';
+
+    const label = document.createElement('div');
+    label.className = 'level-label';
+    label.textContent = level.title;
+    row.appendChild(label);
+
+    let skip = 0;
+    CAT_ORDER.forEach(catKey=>{
+      if(skip > 0){ skip--; return; }
+      const courses = level.columns[catKey];
+      const cell = document.createElement('div');
+      cell.className = 'cat-cell';
+
+      if(courses.length === 0){
+        row.appendChild(cell);
+        return;
+      }
+
+      const spanCourse = courses.find(c=>c.span);
+      if(spanCourse){
+        cell.style.gridColumn = `span ${spanCourse.span}`;
+        skip = spanCourse.span - 1;
+      }
+
+      courses.forEach(c=>{
+        total++;
+        if(c.status === 'completed') done++;
+        cell.appendChild(buildCard(level, catKey, c));
+      });
+      row.appendChild(cell);
+    });
+
+    planEl.appendChild(row);
+  });
+
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statTotal').textContent = total;
+}
+
+function renderLegend(){
+  legendEl.innerHTML = '';
+  CAT_ORDER.forEach(key=>{
+    const cat = CATS[key];
+    const btn = document.createElement('div');
+    btn.className = 'legend-btn';
+    btn.style.setProperty('--lcolor', cat.color);
+    btn.textContent = cat.label;
+    btn.dataset.cat = key;
+    btn.addEventListener('click', ()=> toggleFilter(key));
+    legendEl.appendChild(btn);
+  });
+}
+
+let activeCat = null;
+function toggleFilter(key){
+  activeCat = (activeCat === key) ? null : key;
+  document.querySelectorAll('.legend-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.cat === activeCat);
+    b.classList.toggle('dim', activeCat && b.dataset.cat !== activeCat);
+  });
+  planEl.classList.toggle('filtering', !!activeCat);
+  planEl.querySelectorAll('.card').forEach(card=>{
+    card.classList.toggle('match', card.dataset.cat === activeCat);
+  });
+}
+
+function openLightbox(src, label){
+  const lb = document.getElementById('lightbox');
+  const content = document.getElementById('lightboxContent');
+  const img = new Image();
+  img.onload = ()=>{ content.innerHTML=''; content.appendChild(img); };
+  img.onerror = ()=>{ 
+    const decoded = decodeURIComponent(src);
+    content.innerHTML = `<div class="missing"><b>File Not Found / لم يتم العثور على الملف</b><br><br><code>${decoded}</code><br><br>تأكد من مطابقة اسم المجلد والملف في جهازك للمسار أعلاه بالضبط.</div>`; 
+  };
+  img.src = src; img.alt = label;
+  content.innerHTML = `<div class="missing">Loading…</div>`;
+  lb.classList.add('open');
+}
+
+document.getElementById('closeLightbox').addEventListener('click', ()=> document.getElementById('lightbox').classList.remove('open'));
+document.getElementById('lightbox').addEventListener('click', (e)=>{ if(e.target.id==='lightbox') e.currentTarget.classList.remove('open'); });
+
+const themePicker = document.getElementById('themePicker');
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('.theme-swatch').forEach(s=> s.classList.toggle('active', s.dataset.t === t));
+}
+themePicker.addEventListener('click', (e)=>{
+  const sw = e.target.closest('.theme-swatch');
+  if(sw) setTheme(sw.dataset.t);
+});
+setTheme('white');
+
+render();
+renderLegend();
+</script>
+</body>
+</html>
