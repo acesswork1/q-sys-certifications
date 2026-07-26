@@ -116,12 +116,9 @@ body{
 .card .sub{font-size:10px;color:var(--text-mid);margin-top:2px;margin-bottom:6px;}
 .card h3 + .actions-row{margin-top:8px;}
 
-.status-dot-row{display:flex;align-items:center;gap:6px;margin:7px 0 8px;font-family:var(--font-mono);font-size:9px;color:var(--text-mid);letter-spacing:.04em;cursor:pointer;user-select:none;}
-.status-dot-row .dot{width:6px;height:6px;border-radius:50%;background:var(--text-lo);}
+.status-dot-row{display:flex;align-items:center;gap:5px;margin:7px 0 8px;font-family:var(--font-mono);font-size:9px;color:var(--text-mid);letter-spacing:.04em;}
 .status-dot-row[data-status="completed"]{color:var(--ok);}
-.status-dot-row[data-status="completed"] .dot{background:var(--ok);}
 .status-dot-row[data-status="in-progress"]{color:var(--mid);}
-.status-dot-row[data-status="in-progress"] .dot{background:var(--mid);}
 
 .actions-row{display:flex;gap:5px;}
 .icon-btn{
@@ -165,13 +162,52 @@ body{
 
 footer{margin-top:56px;text-align:center;font-family:var(--font-mono);font-size:10.5px;color:var(--text-lo);}
 
+/* track navigation arrows */
+.nav-arrow{
+  position:fixed;top:50%;transform:translateY(-50%);z-index:40;
+  width:46px;height:46px;border-radius:50%;
+  background:var(--bg-1);border:1px solid var(--line);color:var(--text-mid);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:all .2s ease;box-shadow:var(--shadow);
+}
+.nav-arrow:hover{color:var(--teal);border-color:var(--teal);}
+.nav-arrow.left{left:18px;}
+.nav-arrow.right{right:18px;}
+.nav-arrow svg{width:20px;height:20px;}
+
+.track-dots{display:flex;justify-content:center;gap:7px;margin-bottom:28px;}
+.track-dot{width:7px;height:7px;border-radius:50%;background:var(--line);cursor:pointer;transition:all .2s ease;}
+.track-dot.active{background:var(--teal);width:20px;border-radius:4px;}
+
+.checking-banner{
+  font-family:var(--font-mono);font-size:11px;color:var(--text-lo);
+  text-align:center;padding:10px 0;letter-spacing:.05em;
+}
+
+.placeholder-panel{
+  border:1px dashed var(--line);border-radius:14px;padding:70px 30px;text-align:center;
+  color:var(--text-lo);font-family:var(--font-mono);
+}
+.placeholder-panel b{display:block;color:var(--text-mid);font-family:var(--font-display);font-size:20px;margin-bottom:8px;}
+
 @media (max-width:860px){
   .level-row{grid-template-columns:100px repeat(5,minmax(120px,1fr));overflow-x:auto;}
+  .nav-arrow{width:38px;height:38px;}
+  .nav-arrow.left{left:6px;} .nav-arrow.right{right:6px;}
 }
 </style>
 </head>
 <body>
+<button class="nav-arrow left" id="navLeft" title="Previous">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="nav-arrow right" id="navRight" title="Next">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
 <div class="wrap">
+
+  <div class="track-dots" id="trackDots"></div>
 
   <div class="top">
     <div class="brand">
@@ -196,6 +232,7 @@ footer{margin-top:56px;text-align:center;font-family:var(--font-mono);font-size:
     </div>
   </div>
 
+  <div class="checking-banner" id="checkingBanner" style="display:none;">Checking local files…</div>
   <div class="plan" id="plan"></div>
 
   <div class="legend-wrap">
@@ -225,55 +262,55 @@ const LEVELS = [
   {
     id:"LVL0", folder:"00_NOVICE_LVL_Zero", title:"Level 0",
     columns:{
-      intro:    [{code:"01_Q-SYS-Architect", name:"Q-SYS Architect", status:"completed"}],
-      platform: [{code:"02_Q-SYS-Level-Zero", name:"Q-SYS Level Zero", status:"completed", span:3, wide:true}],
+      intro:    [{code:"01_Q-SYS-Architect", name:"Q-SYS Architect", status:"not-started"}],
+      platform: [{code:"02_Q-SYS-Level-Zero", name:"Q-SYS Level Zero", status:"not-started", span:3, wide:true}],
       vision:   [],
       control:  [],
-      cinema:   [{code:"03_Q-SYS-Cinema-101", name:"Q-SYS Cinema 101", status:"completed"}],
+      cinema:   [{code:"03_Q-SYS-Cinema-101", name:"Q-SYS Cinema 101", status:"not-started"}],
     }
   },
   {
     id:"LVL1", folder:"01_BEGINNER_LVL_One", title:"Level 1",
     columns:{
-      intro:    [{code:"11_Q-SYS-Sales-Professional", name:"Q-SYS Sales Professional", status:"completed"}],
+      intro:    [{code:"11_Q-SYS-Sales-Professional", name:"Q-SYS Sales Professional", status:"not-started"}],
       platform: [
-        {code:"12_Q-SYS-Level-1", name:"Q-SYS Level 1", status:"completed"},
-        {code:"13_Q-SYS-Reflect-Technician-Training", name:"Q-SYS Reflect", sub:"Technician Training", status:"completed"},
-        {code:"14_Q-SYS-Video-101", name:"Q-SYS Video 101", status:"completed"},
+        {code:"12_Q-SYS-Level-1", name:"Q-SYS Level 1", status:"not-started"},
+        {code:"13_Q-SYS-Reflect-Technician-Training", name:"Q-SYS Reflect", sub:"Technician Training", status:"not-started"},
+        {code:"14_Q-SYS-Video-101", name:"Q-SYS Video 101", status:"not-started"},
       ],
       vision:   [
-        {code:"15_Q-SYS-VisionSuite-ACPR-Level-1", name:"Q-SYS VisionSuite", sub:"ACPR Level 1", status:"completed"},
-        {code:"16_Q-SYS-VisionSuite-Seervision-Level-1", name:"Q-SYS VisionSuite", sub:"Seervision Level 1", status:"completed"},
+        {code:"15_Q-SYS-VisionSuite-ACPR-Level-1", name:"Q-SYS VisionSuite", sub:"ACPR Level 1", status:"not-started"},
+        {code:"16_Q-SYS-VisionSuite-Seervision-Level-1", name:"Q-SYS VisionSuite", sub:"Seervision Level 1", status:"not-started"},
       ],
       control:  [
-        {code:"17_Q-SYS-Control-101", name:"Q-SYS Control 101", status:"completed"},
-        {code:"18_Q-SYS-Control-&-UCI-Fundamentals-Control-Logic", name:"Q-SYS Control & UCI", sub:"Fundamentals — Control Logic", status:"completed"},
+        {code:"17_Q-SYS-Control-101", name:"Q-SYS Control 101", status:"not-started"},
+        {code:"18_Q-SYS-Control-&-UCI-Fundamentals-Control-Logic", name:"Q-SYS Control & UCI", sub:"Fundamentals — Control Logic", status:"not-started"},
       ],
-      cinema:   [{code:"19_Q-SYS-Level-1-for-Cinema", name:"Q-SYS Level 1 for Cinema", status:"completed"}],
+      cinema:   [{code:"19_Q-SYS-Level-1-for-Cinema", name:"Q-SYS Level 1 for Cinema", status:"not-started"}],
     }
   },
   {
     id:"LVL2", folder:"02_INTERMEDIATE_LVL_Two", title:"Level 2",
     columns:{
       intro:    [],
-      platform: [{code:"21_Q-SYS-Level-2", name:"Q-SYS Level 2", status:"completed"}],
+      platform: [{code:"21_Q-SYS-Level-2", name:"Q-SYS Level 2", status:"not-started"}],
       vision:   [
-        {code:"22_Q-SYS-VisionSuite-ACPR-Level-2", name:"Q-SYS VisionSuite", sub:"ACPR Level 2", status:"completed"},
-        {code:"23_Q-SYS-VisionSuite-Seervision-Level-2", name:"Q-SYS VisionSuite", sub:"Seervision Level 2", status:"completed"},
+        {code:"22_Q-SYS-VisionSuite-ACPR-Level-2", name:"Q-SYS VisionSuite", sub:"ACPR Level 2", status:"not-started"},
+        {code:"23_Q-SYS-VisionSuite-Seervision-Level-2", name:"Q-SYS VisionSuite", sub:"Seervision Level 2", status:"not-started"},
       ],
-      control:  [{code:"24_Q-SYS-Control-&-UCI-Intermediate-Block-Controller", name:"Q-SYS Control & UCI", sub:"Intermediate — Block Controller", status:"completed"}],
-      cinema:   [{code:"25_Q-SYS-Level-2-for-Cinema", name:"Q-SYS Level 2 for Cinema", status:"completed"}],
+      control:  [{code:"24_Q-SYS-Control-&-UCI-Intermediate-Block-Controller", name:"Q-SYS Control & UCI", sub:"Intermediate — Block Controller", status:"not-started"}],
+      cinema:   [{code:"25_Q-SYS-Level-2-for-Cinema", name:"Q-SYS Level 2 for Cinema", status:"not-started"}],
     }
   },
   {
     id:"LVL3", folder:"03_ADVANCE_LVL_Three", title:"Level 3",
     columns:{
       intro:    [],
-      platform: [{code:"21_Q-SYS-Quantum-Level-1", name:"Q-SYS Quantum Level 1", status:"completed"}],
+      platform: [{code:"21_Q-SYS-Quantum-Level-1", name:"Q-SYS Quantum Level 1", status:"not-started"}],
       vision:   [],
       control:  [
-        {code:"22_Q-SYS-Control-&-UCI-Advanced-Lua-Scripting", name:"Q-SYS Control & UCI", sub:"Advanced — Lua Scripting", status:"completed"},
-        {code:"23_Q-SYS-Control-Quickstarts", name:"Q-SYS Control Quickstarts", status:"completed"},
+        {code:"22_Q-SYS-Control-&-UCI-Advanced-Lua-Scripting", name:"Q-SYS Control & UCI", sub:"Advanced — Lua Scripting", status:"not-started"},
+        {code:"23_Q-SYS-Control-Quickstarts", name:"Q-SYS Control Quickstarts", status:"not-started"},
       ],
       cinema:   [],
     }
@@ -311,22 +348,18 @@ function buildCard(level, catKey, course){
   card.dataset.completed = course.status === 'completed';
   card.style.setProperty('--cat-color', cat.color);
 
+  const statusEmoji = {"completed":"✅","in-progress":"🅿️","not-started":"❌"}[course.status];
   card.innerHTML = `
     <div class="code">${course.code}</div>
     <h3>${course.name}</h3>
     ${course.sub ? `<div class="sub">${course.sub}</div>` : ''}
-    <div class="status-dot-row" data-status="${course.status}"><span class="dot"></span>${course.status}</div>
+    <div class="status-dot-row" data-status="${course.status}">${statusEmoji} ${course.status}</div>
     <div class="actions-row">
       <button class="icon-btn" data-action="cert" title="View Certificate">${iconEye}</button>
       <button class="icon-btn" data-action="badge" title="View Badge">${iconBadge}</button>
       <button class="icon-btn" data-action="download" title="Download PDF">${iconDownload}</button>
     </div>`;
 
-  card.querySelector('.status-dot-row').addEventListener('click', ()=>{
-    const cycle = {"not-started":"in-progress","in-progress":"completed","completed":"not-started"};
-    course.status = cycle[course.status];
-    render();
-  });
   card.querySelector('[data-action="cert"]').addEventListener('click', ()=> openLightbox(p.certImg, course.name + ' — Certificate'));
   card.querySelector('[data-action="badge"]').addEventListener('click', ()=> openLightbox(p.badgeImg, course.name + ' — Badge'));
   card.querySelector('[data-action="download"]').addEventListener('click', ()=> {
@@ -436,8 +469,109 @@ themePicker.addEventListener('click', (e)=>{
 });
 setTheme('white');
 
-render();
-renderLegend();
+/* ========== FILE-EXISTENCE DETECTION ========== */
+// يفحص وجود ملف صورة فعلياً على القرص (يعمل بشكل موثوق عبر <img>)
+function checkImage(url){
+  return new Promise(resolve=>{
+    const img = new Image();
+    const timer = setTimeout(()=>resolve(false), 4000);
+    img.onload = ()=>{ clearTimeout(timer); resolve(true); };
+    img.onerror = ()=>{ clearTimeout(timer); resolve(false); };
+    img.src = url;
+  });
+}
+// يحاول التحقق من وجود PDF عبر fetch. بعض المتصفحات تمنع fetch على ملفات file:// محلياً،
+// وفي هذه الحالة نعتبره "غير مؤكد" ونعتمد على الصورتين فقط لتحديد الحالة.
+function checkPdf(url){
+  return fetch(url, {method:'HEAD'})
+    .then(res=> res.ok)
+    .catch(()=> null); // null = تعذر التحقق (قيود المتصفح)، وليس بالضرورة أن الملف غير موجود
+}
+
+async function detectCourseStatus(level, course){
+  const p = filePaths(level, course.code);
+  const [certOk, badgeOk, pdfOk] = await Promise.all([
+    checkImage(p.certImg),
+    checkImage(p.badgeImg),
+    checkPdf(p.certPdf),
+  ]);
+  // إذا تعذر التحقق من الـ PDF (null)، نعتمد فقط على الصورتين
+  const pdfCounts = pdfOk === null ? certOk && badgeOk : pdfOk;
+  const foundCount = [certOk, badgeOk, pdfCounts].filter(Boolean).length;
+  if(foundCount === 3) return 'completed';
+  if(foundCount === 0) return 'not-started';
+  return 'in-progress';
+}
+
+async function runDetection(){
+  const banner = document.getElementById('checkingBanner');
+  banner.style.display = 'block';
+
+  for(const level of LEVELS){
+    for(const catKey of CAT_ORDER){
+      for(const course of level.columns[catKey]){
+        course.status = await detectCourseStatus(level, course);
+      }
+    }
+  }
+
+  banner.style.display = 'none';
+}
+
+/* ========== TRACK NAVIGATION (Q-SYS / IT-Essentials / CCNA) ========== */
+const TRACKS = [
+  {id:'qsys', eyebrow:'Certification Path', title:'Q-SYS Training Plan', hasData:true},
+  {id:'cisco', eyebrow:'Coming Soon', title:'Cisco Courses', hasData:false,
+    note:'abdallah_morshed / Cisco / IT_Essentials · CCNA'},
+];
+let trackIndex = 0;
+
+function renderTrackDots(){
+  const dotsEl = document.getElementById('trackDots');
+  dotsEl.innerHTML = '';
+  TRACKS.forEach((t, i)=>{
+    const dot = document.createElement('div');
+    dot.className = 'track-dot' + (i === trackIndex ? ' active' : '');
+    dot.addEventListener('click', ()=>{ trackIndex = i; renderTrack(); });
+    dotsEl.appendChild(dot);
+  });
+}
+
+function renderTrack(){
+  const t = TRACKS[trackIndex];
+  document.querySelector('.brand-text .eyebrow').textContent = t.eyebrow;
+  document.querySelector('.brand-text h1').textContent = t.title;
+  renderTrackDots();
+
+  const statsEl = document.querySelector('.stats');
+  const legendWrap = document.querySelector('.legend-wrap');
+  const footerEl = document.querySelector('footer');
+
+  if(t.hasData){
+    statsEl.style.display = 'flex';
+    legendWrap.style.display = 'block';
+    footerEl.style.display = 'block';
+    render();
+    renderLegend();
+  } else {
+    statsEl.style.display = 'none';
+    legendWrap.style.display = 'none';
+    footerEl.style.display = 'none';
+    planEl.innerHTML = `<div class="placeholder-panel"><b>${t.title}</b>هذا المسار قيد الإعداد — سيتم تفعيله قريباً<br>This track is not built yet — coming soon${t.note ? `<br><br><span style="font-size:10px;">${t.note}</span>` : ''}</div>`;
+  }
+}
+
+document.getElementById('navLeft').addEventListener('click', ()=>{
+  trackIndex = (trackIndex - 1 + TRACKS.length) % TRACKS.length;
+  renderTrack();
+});
+document.getElementById('navRight').addEventListener('click', ()=>{
+  trackIndex = (trackIndex + 1) % TRACKS.length;
+  renderTrack();
+});
+
+/* boot */
+runDetection().then(renderTrack);
 </script>
 </body>
 </html>
